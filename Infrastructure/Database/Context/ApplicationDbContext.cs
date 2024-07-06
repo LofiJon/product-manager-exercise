@@ -3,8 +3,6 @@ using System.Data.SqlClient;
 using Core.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-using MySql.Data.MySqlClient;
-
 namespace Infrastructure.Database.Context;
 
 public class ApplicationDbContext : DbContext

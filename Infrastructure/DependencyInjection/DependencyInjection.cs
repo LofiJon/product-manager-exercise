@@ -1,21 +1,21 @@
-﻿using Application.Contracts;
-using Application.Services;
-using AutoMapper;
-using Infrastructure.Database;
-using Infrastructure.Database.Repositories;
-using MediatR;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using System.Reflection;
+﻿using System.Reflection;
 using Application.Contracts.Product;
 using Application.Dtos;
+using Application.Services;
 using Application.Usecases.Product;
 using Core.Entities;
 using Core.Repositories;
 using Infrastructure.Database.Context;
 using Infrastructure.Database.Repositories;
 using Infrastructure.Mappings;
+using Infrastructure.Pageable;
+using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
+namespace Infrastructure.DependencyInjection;
 
 public static class DependencyInjection
 {
@@ -32,9 +32,25 @@ public static class DependencyInjection
         services.AddScoped<IAddStock, AddStockUsecase>();
         services.AddScoped<IConsumeStock, ConsumeStockUsecase>();
         services.AddScoped<IResetDailyConsumption, ResetDailyConsumptionUsecase>();
+        services.AddScoped<IPageableProduct, PageableProductUsecase>();
+        services.AddScoped<IAddProduct, AddProductUsecase>();
+        services.AddScoped<IDeleteProduct, DeleteProductUsecase>();
 
         // Register AutoMapper
         services.AddAutoMapper(Assembly.GetExecutingAssembly());
+        
+
+        // Register IHttpContextAccessor manually
+        services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+
+        // Register IUriService
+        services.AddSingleton<IUriService>(o =>
+        {
+            var accessor = o.GetRequiredService<IHttpContextAccessor>();
+            var request = accessor?.HttpContext?.Request;
+            var uri = string.Concat(request?.Scheme, "://", request?.Host.ToUriComponent());
+            return new UriAdapter(uri);
+        });
 
         // Register MediatR
         services.AddMediatR(config =>

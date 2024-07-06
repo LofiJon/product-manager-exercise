@@ -9,6 +9,7 @@ using MediatR;
 using AutoMapper;
 using System.Reflection;
 using Infrastructure.Database.Context;
+using Infrastructure.DependencyInjection;
 using Infrastructure.Seeders;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
@@ -37,6 +38,17 @@ builder.Services.AddSwaggerGen(options =>
     {
         Version = "v1",
         Title = "Product Manager",
+        Description = "API for managing products",
+        Contact = new OpenApiContact
+        {
+            Name = "Jonathan Malagueta da Costa",
+            Url = new Uri("https://www.linkedin.com/in/jonathan-malagueta-524391150/")
+        },
+        License = new OpenApiLicense
+        {
+            Name = "Apache 2.0",
+            Url = new Uri("http://www.apache.org/licenses/LICENSE-2.0.html")
+        }
     });
 
     var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";

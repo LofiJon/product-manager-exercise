@@ -7,6 +7,7 @@ using WebAPI.Helpers;
 namespace WebAPI.Controllers.Product;
 
 [ApiController]
+[Tags("Products")]
 [Route(PathMapping.Api + PathMapping.Version + PathMapping.Product)]
 [Produces("application/json")]
 public class AddStockController : ControllerBase

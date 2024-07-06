@@ -10,22 +10,22 @@ namespace WebAPI.Controllers.Product;
 [Tags("Products")]
 [Route(PathMapping.Api + PathMapping.Version + PathMapping.Product)]
 [Produces("application/json")]
-public class ConsumeStockController : ControllerBase
+public class UpdateProductController : ControllerBase
 {
-    private readonly IConsumeStock _consumeStock;
+    private readonly IUpdateProduct _updateProduct;
 
-    public ConsumeStockController(IConsumeStock consumeStock)
+    public UpdateProductController(IUpdateProduct updateProduct)
     {
-        _consumeStock = consumeStock;
+        _updateProduct = updateProduct;
     }
     
     /// <summary>
-    /// Update product consume
+    /// Update product
     /// </summary>
-    [HttpPut("consume-stock")]
-    public async Task<ActionResult<ProductDto>> Handle(ConsumeRequest request)
+    [HttpPut("{id}")]
+    public async Task<ActionResult<ProductDto>> Handle(Guid id, ProductRequest request)
     {
-        var result = await _consumeStock.Execute(request);
+        var result = await _updateProduct.Execute(id, request);
         return Ok(result);
     }
 }

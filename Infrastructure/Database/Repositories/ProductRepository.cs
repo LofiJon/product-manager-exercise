@@ -3,10 +3,6 @@ using Core.Repositories;
 using Dapper;
 using Infrastructure.Database.Context;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace Infrastructure.Database.Repositories
@@ -61,6 +57,7 @@ namespace Infrastructure.Database.Repositories
         public async Task<List<Product>> Pageable(int number, int size)
         {
             return await _context.Products
+                .Where(p => p.DeletedAt == null)
                 .OrderBy(p => p.CreatedAt)
                 .Skip((number - 1) * size)
                 .Take(size)
@@ -71,8 +68,8 @@ namespace Infrastructure.Database.Repositories
         {
             var product = await _context.Products.FindAsync(id);
             if (product == null) return false;
-
-            _context.Products.Remove(product);
+            product.DeletedAt = DateTime.Now;
+            _context.Update(product);
             await _context.SaveChangesAsync();
             return true;
         }
